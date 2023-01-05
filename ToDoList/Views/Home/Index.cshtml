@@ -20,17 +20,25 @@
   }
 </ul>
 
-<h4>Items</h4>
-@if (Model["items"].Length == 0)
+@if (User.Identity.IsAuthenticated)
 {
-  <p>No items have been added yet!</p>
-} 
-<ul>
-  @foreach (Item item in Model["items"])
+  <h4>Items for @User.Identity.Name</h4>
+  @if (Model["items"].Length == 0)
   {
-    <li>@Html.ActionLink(@item.Description, "Details", "Items", new { id = @item.ItemId})</li>
-  }
-</ul>
+    <p>No items have been added yet!</p>
+  } 
+  <ul>
+    @foreach (Item item in Model["items"])
+    {
+      <li>@Html.ActionLink(@item.Description, "Details", "Items", new { id = @item.ItemId})</li>
+    }
+  </ul>
+}
+else
+{
+  <h4>Items</h4>
+  <p>Please @Html.ActionLink("log in", "LogIn", "Account") to view or manage your items.</p>
+}
 
 <hr>
 

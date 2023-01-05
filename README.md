@@ -2,7 +2,7 @@
 
 This is an example repo corresponding to multiple lessons within the LearnHowToProgram.com walkthrough on creating a To Do List application in [Section 5: Authentication with Identity](https://www.learnhowtoprogram.com/c-and-net/authentication-with-identity).
 
-This project corresponds to the classwork and lessons that describe how to use Identity in an ASP.NET Core MVC project to authenticate users. This project contains a one-to-many relationship between `Item` and `Category`, and a many-to-many relationship between `Item` and `Tag`, and a one-to-many relationship between `ApplicationUser` and `Item`. sThere are multiple lessons in this series. The first lesson in the series is [Identity Setup and Configuration](https://www.learnhowtoprogram.com/c-and-net/authentication-with-identity/identity-setup-and-configuration).
+This project corresponds to the classwork and lessons that describe how to use Identity in an ASP.NET Core MVC project to authenticate users. This project contains a one-to-many relationship between `Item` and `Category`, and a many-to-many relationship between `Item` and `Tag`, and a one-to-many relationship between `ApplicationUser` and `Item`. There are multiple lessons in this series. The first lesson in the series is [Identity Setup and Configuration](https://www.learnhowtoprogram.com/c-and-net/authentication-with-identity/identity-setup-and-configuration).
 
 There are multiple branches in this repo that are described more below.
 

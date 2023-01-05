@@ -1,0 +1,21 @@
+@{
+  Layout = "_Layout";
+}
+
+@model ToDoList.Models.Tag
+
+<h2>Add an item</h2>
+
+<h4>Add an item to this tag: @Html.DisplayFor(model => model.Title)</h4>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.TagId)
+
+    @Html.Label("Select item")
+    @Html.DropDownList("ItemId")
+
+    <input type="submit" value="Save" />
+}
+
+<p>@Html.ActionLink("Back to list", "Index")</p>

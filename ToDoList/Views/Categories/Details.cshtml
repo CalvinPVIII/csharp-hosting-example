@@ -1,0 +1,45 @@
+@{
+  Layout = "_Layout";
+}
+
+@model ToDoList.Models.Category;
+@using ToDoList.Models;
+@using System.Collections.Generic;
+
+<h2>Category Details</h2>
+<hr />
+<h3>@Html.DisplayNameFor(model => model.Name): @Html.DisplayFor(model => model.Name)</h3>
+
+@if(@Model.Items.Count == 0)
+{
+  <p>This category does not contain any items</p>
+}
+else
+{
+  <h4>Items the category contains:</h4>
+  <ul>
+  @foreach(Item item in Model.Items)
+  {
+    string tags = "";
+    @if(item.JoinEntities.Count == 0)
+    {
+      tags = "This item does not have any tags.";
+    }
+    else
+    {
+      List<string> tagList = new List<string>();
+      @foreach(ItemTag join in item.JoinEntities)
+      {
+        tagList.Add(join.Tag.Title);
+      }
+      tags = String.Join(", ", tagList);
+    }
+    <li>@item.Description | Tags: @tags</li>
+  }
+  </ul>
+}
+
+<p>@Html.ActionLink("Back to categories", "Index")</p>
+<p>@Html.ActionLink("Edit Category", "Edit", new { id = Model.CategoryId })</p>
+<p>@Html.ActionLink("Delete Category", "Delete", new { id = Model.CategoryId })</p>
+<p>@Html.ActionLink("Add new item", "Create", "Items")</p>

@@ -1,0 +1,39 @@
+@{
+  Layout = "_Layout";
+}
+
+@using ToDoList.Models;
+
+<h1>Welcome to the To Do List!</h1>
+
+<hr>
+
+<h4>Categories</h4>
+@if (Model["categories"].Length == 0)
+{
+  <p>No categories have been added yet!</p>
+} 
+<ul>
+  @foreach (Category cat in Model["categories"])
+  {
+    <li>@Html.ActionLink(@cat.Name, "Details", "Categories", new { id = @cat.CategoryId})</li>
+  }
+</ul>
+
+<h4>Items</h4>
+@if (Model["items"].Length == 0)
+{
+  <p>No items have been added yet!</p>
+} 
+<ul>
+  @foreach (Item item in Model["items"])
+  {
+    <li>@Html.ActionLink(@item.Description, "Details", "Items", new { id = @item.ItemId})</li>
+  }
+</ul>
+
+<hr>
+
+<p>@Html.ActionLink("Manage items", "Index", "Items")</p> 
+<p>@Html.ActionLink("Manage categories", "Index", "Categories")</p>
+<p>@Html.ActionLink("Manage tags", "Index", "Tags")</p>

@@ -44,7 +44,7 @@ Cons:
 
 ## Railway Setup: <a name="railway"></a>
 
-- Go to [Railway.app](railway.app)
+- Go to [Railway.app](https://railway.app)
 - Sign in through Github
 - New project, Provision MySQL
   ![Click Provision MYSQL](./images/Railway1.png)
@@ -76,7 +76,7 @@ Cons:
 
 **If you have already done the Railway setup, you don't need to do this**
 
-- Go to [Planetscale.com](planetscale.com) and create an account
+- Go to [Planetscale.com](https://planetscale.com) and create an account
 - On the dashboard, click on `create`
   ![Planetscale create](./images/Planetscale1.png)
 - Give it a name and set the region
@@ -159,7 +159,7 @@ Cons:
 
   ```
 
-- Go to [Render.com](render.com), and sign in or create and account through Github
+- Go to [Render.com](https://render.com), and sign in or create and account through Github
 - Click on `New -> Web Service`
   ![New Web Service](./images/Render1.png)
 - On the right under your Github name, click configure

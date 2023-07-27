@@ -122,7 +122,7 @@ Cons:
 - Click on `main` and double check that all your tables have been created properly
 - If all tables look correct, you can move on to hosting the site itself
 
-## Hosting the Website with Render <a name="Render"></a>
+## Hosting the Website with Render <a name="render"></a>
 
 - Render has built in support for many different kinds of apps, but it also supports the use of a Dockerfile, so that is what we will use
 - In the root of your project folder, make a new file called `Dockerfile`

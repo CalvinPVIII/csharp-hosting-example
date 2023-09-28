@@ -4,17 +4,31 @@ This guide will walk you through hosting a MySQL database and an ASP.NET MVC app
 
 ### Table of Contents:
 
-[Setting Up The Database](#setup)
+[Setting Up The Database](#setting-up-the-database)
 
-[Hosting the MySQL database with Railway](#railway)
+[Hosting the MySQL database with TiDB](#tidb-setup)
 
-[Hosting the MySQL database with Planetscale](#planetscale)
+[Hosting the MySQL database with Railway](#railway-setup)
 
-[Hosting the website with Render](#render)
+[Hosting the MySQL database with Planetscale](#planetscale-setup)
 
-## Setting Up the Database <a name="setup"></a>
+[Hosting the website with Render](#hosting-the-website-with-render)
 
-- In order to setup our ASP.NET app with a MySQL database, there are two things we will need to configure: the database and the website itself. For the website, we will use a service called Render, along with a Dockerfile. For the database we have two options: Railway or Planetscale. Below are some pros and cons for each service.
+## Setting Up the Database
+
+In order to setup our ASP.NET app with a MySQL database, there are two things we will need to configure: the database and the website itself. For the website, we will use a service called Render, along with a Dockerfile. For the database we have a few options. Below are a list of options this guide covers, as well as some pros and cons for each.
+
+### TiDB:
+
+Pros:
+
+- Easy to scale up/down
+- 25 GB of row storage and 25 GB of column storage
+- Built using AWS infrastructure
+
+Cons:
+
+- Free tier can be a bit slow
 
 ### Railway:
 
@@ -28,6 +42,7 @@ Cons:
 - Limited to 500 hours of uptime, or $5 of free credit, per month
 - Limits are shared across all databases
 - Database will shutdown when limits are reached
+- \*\*As of September 2023, Railway no longer offers a free tier. You can still use Railway to host your database, and the instructions below should still work. See Railways pricing options [here](https://railway.app/pricing). For another free hosting options, check out [TiDB](#tidb-setup)
 
 ### Planetscale:
 
@@ -40,9 +55,55 @@ Cons:
 - More difficult to setup
 - Has some specific restrictions on your schema
 
-**You only need to follow the setup for one or the other, and not both.**
+Overall, I would recommend using TiDB as it is by far the most straight forward and completely free option, but you can try out the other providers should TiDB not work for you.
 
-## Railway Setup: <a name="railway"></a>
+You can also check out other free options that are listed in [this Github repo](https://github.com/cloudcommunity/Free-Hosting#databases-dbaas) that has a list of free database providers and other hosting options.
+
+**You only need to follow the setup for one database provider.**
+
+## TiDB Setup
+
+- Go to [pingcap.com/tidb-dedicated/](https://www.pingcap.com/tidb-dedicated/) and click on "Sign Up" to create an account.
+- Once you've created an account, navigate to the [tidbcloud.com/console/clusters](https://tidbcloud.com/console/clusters) if you are not already there.
+- In the top right of the page, click on the "Create Cluster" button.
+- At the cluster configuration page, you will want to pick the "Serverless" option, as that does not require any payment options.
+- Be sure to also give your cluster a name, as that will be important later.
+  ![Cluster configuration options](./images/tidb1.png)
+- On the right side of the page, click on "Create"
+- Now, on the cluster overview page, click on the "Connect" button in the top right.
+  ![Connect to cluster](./images/tidb2.png)
+- In the pop up that is now on screen, select "General" from the "Connect With" dropdown.
+  ![General in the dropdown](./images/tidb3.png)
+- In the bottom right of the page, click "Create Password".
+  ![Create password](./images/tidb4.png)
+- Once you click "Create Password", "<your\*password>" should be replaced with a new password. **This password can only be viewed once**
+- Now we are going to use this info to create our connection string for our app.
+- We now have a set of key value pairs for different variables that are needed to connect to our database with. Plug the following variables into your connection string, like this:
+
+  - "Server={host};Port={port};database={your cluster name};uid={user};pwd={password};"
+
+    Your `appsettings.json` should look something like this:
+
+    ```
+    {
+        "ConnectionStrings": {
+            "DefaultConnection": "Server=gateway01.us-west-2.prod.aws.tidbcloud.com;Port=4000;database=todolist;uid=2aTAWFrB4MJVFfk.root;pwd=<your_password>;"
+        }
+    }
+    ```
+
+- In your terminal, after navigating to the directory of your project's `.csproj` file, run the command `dotnet ef database update`. This will update our database schema on the cluster.
+- To confirm that our database schema has been successfully updated, navigate to the "Chat2Query" tab, and expand your database name.
+
+  ![Confirming schema](./images/tidb5.png)
+
+- You should see all your tables in your schema. TiDB should now be setup, and you can move on to [Hosting the website with Render](#hosting-the-website-with-render)
+
+## Railway Setup
+
+**If you have already setup your database with TiDB or another provider, you can skip to the '[Hosting the website with Render](#hosting-the-website-with-render)' section**
+
+**Railway is no longer free, but you can still use it to host your database if you'd like**
 
 - Go to [Railway.app](https://railway.app)
 - Sign in through Github
@@ -72,9 +133,9 @@ Cons:
   ![Confirm tables exist](./images/Railway5.png)
   - If all your tables look good, you can move on to setting up the site itself on Render
 
-## Planetscale Setup <a name="Planetscale"></a>
+## Planetscale Setup
 
-**If you have already done the Railway setup, you don't need to do this**
+**If you have already done the Railway or TiDB setup, you don't need to do this**
 
 - Go to [Planetscale.com](https://planetscale.com) and create an account
 - On the dashboard, click on `create`
@@ -122,9 +183,9 @@ Cons:
 - Click on `main` and double check that all your tables have been created properly
 - If all tables look correct, you can move on to hosting the site itself
 
-## Hosting the Website with Render <a name="render"></a>
+## Hosting the Website with Render
 
-- Render has built in support for many different kinds of apps, but it also supports the use of a Dockerfile, so that is what we will use
+- Render has built in support for many different kinds of apps, but it also supports the use of a Dockerfile, which is what we are going to use to host an ASP.NET app.
 - In the root of your project folder, make a new file called `Dockerfile`
 - Depending on what your application is, your `Dockerfile` may look different. Here are some guides about creating a Docker environment for a .NET application:
   - [Microsoft's tutorial for containerizing a .NET app](https://learn.microsoft.com/en-us/dotnet/core/docker/build-container)
@@ -132,7 +193,8 @@ Cons:
 - If you are trying to host a ASP.NET MVC site or API, then this Dockerfile below should work for you.
 
   - Paste this into your `Dockerfile`:
-  - Make sure to replace `AppName` on the last line of the Dockerfile to the name of your app
+  - _Make sure to replace `AppName` on the last line of the Dockerfile to the name of your app_
+  - _Make sure that it matches the .NET version of your app_
 
   ```
   # Set the base image to .NET 6 SDK
@@ -159,23 +221,28 @@ Cons:
 
   ```
 
-- Go to [Render.com](https://render.com), and sign in or create and account through Github
+- Go to [Render.com](https://render.com), and sign in or create and account through Github.
 - Click on `New -> Web Service`
   ![New Web Service](./images/Render1.png)
-- On the right under your Github name, click configure
+- On the right under your Github name, click configure.
   ![Configure button](./images/Render2.png)
-- Under `Repository Access`, you can either click on all repositories, or click `Select Repositories`, and then pick your ASP.NET app
+- Under `Repository Access`, you can either click on all repositories, or click `Select Repositories`, and then pick your ASP.NET app.
   ![New Web Service](./images/Render3.png)
-- Click `Save`
-- Click `Connect` next to the repo of your ASP.NET app
+- Click `Save`.
+- Click `Connect` next to the repo of your ASP.NET app.
   ![New Web Service](./images/Render4.png)
-- Fill out the information as you see fit, make sure your runtime is `Docker`, and the instance is `Free`
+- Fill out the information as you see fit, make sure your runtime is `Docker`, and the instance is `Free`.
   ![Render settings](./images/Render6.png)
-- Scroll down and click `Advanced -> Add a Secret File`
-- Filename will be `appsettings.json`, and paste in your local appsettings.json to the file contents section
+- Scroll down and click `Advanced -> Add a Secret File`.
+- Filename will be `appsettings.json`, and paste in your local appsettings.json to the file contents section.
   ![New Web Service](./images/Render5.png)
-- At the bottom, click `Create Web Service`
+- At the bottom, click `Create Web Service`.
 - It will take a few minutes to spin up.
 - The dashboard will have a link to your site on the top left of the page
   ![Render link](./images/Render7.png)
-- Once it's finished building, and you click on any links and see an error along the lines of `dial tcp 127.0.0.1:80: connect: connection refused`, you will need to wait just a bit longer for everything to work properly.
+
+  _Once it's finished building, and you click on any links and see an errors along the lines of `dial tcp 127.0.0.1:80: connect: connection refused`, you will need to wait just a bit longer for everything to work properly._
+
+Your ASP.NET app should now be successfully hosted.
+
+_Disclaimer: service providers will often change their pricing and plan options, depending on when you view this guide, some steps may be different, and some providers may not offer the same plans. This guide was last updated in September of 2023_

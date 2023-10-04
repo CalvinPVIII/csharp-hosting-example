@@ -25,7 +25,7 @@ As with all free hosting options, it is only recommend to deploy demo or persona
 
 [Hosting the MySQL database with Planetscale](./Guides/Planetscale.md)
 
-[Converting to a PostgreSQL database, and hosting with Supabase]("./Guides/PSQL.md)
+[Converting to a PostgreSQL database, and hosting with Supabase](./Guides/PSQL.md)
 
 [Hosting the website with Render](./Guides/SiteHosting.md)
 
